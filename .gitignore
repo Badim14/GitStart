@@ -1,0 +1,4 @@
+/GitStart/.vs
+*.json
+/GitStart/obj/Debug
+/GitStart/bin/Debug
