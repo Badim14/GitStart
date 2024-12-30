@@ -10,6 +10,18 @@
 /GitStart/.idea
 /GitStart/.ReSharper
 
+/GitStart.Tests/bin
+/GitStart.Tests/obj
+/GitStart.Tests/.vscode
+/GitStart.Tests/packages
+/GitStart.Tests/.nuget
+/GitStart.Tests/TestResults
+/GitStart.Tests/.vs
+/GitStart.Tests/Generated_Code
+/GitStart.Tests/node_modules
+/GitStart.Tests/.idea
+/GitStart.Tests/.ReSharper
+
 *.user
 *.rsuser
 *.suo
