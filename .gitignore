@@ -2,3 +2,4 @@
 *.json
 /GitStart/obj/Debug
 /GitStart/bin/Debug
+*.cache
