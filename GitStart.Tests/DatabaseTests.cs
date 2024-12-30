@@ -10,43 +10,47 @@ namespace GitStart.Tests
     public class DatabaseTests
     {
         private readonly DbContextOptions<GitStartContext> _options;
-        private const string DatabaseFileName = "GitStartTest.db";
+
+        // РњРµС‚РѕРґ РґР»СЏ РіРµРЅРµСЂР°С†РёРё СѓРЅРёРєР°Р»СЊРЅРѕРіРѕ РёРјРµРЅРё Р±Р°Р·С‹ РґР°РЅРЅС‹С… РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚РµСЃС‚Р°
+        private string GetDatabaseFileName() => $"GitStartTest_{Guid.NewGuid()}.db";
 
         public DatabaseTests()
         {
-            // Удаляем старую базу данных перед тестами
-            if (File.Exists(DatabaseFileName))
+            var databaseFileName = GetDatabaseFileName();
+
+            // РЈРґР°Р»СЏРµРј СЃС‚Р°СЂСѓСЋ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РїРµСЂРµРґ С‚РµСЃС‚Р°РјРё, РµСЃР»Рё РѕРЅР° СЃСѓС‰РµСЃС‚РІСѓРµС‚
+            if (File.Exists(databaseFileName))
             {
-                File.Delete(DatabaseFileName);
+                File.Delete(databaseFileName);
             }
 
-            // Настройка контекста для тестирования
+            // РќР°СЃС‚СЂРѕР№РєР° РєРѕРЅС‚РµРєСЃС‚Р° РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ СЃ СѓРЅРёРєР°Р»СЊРЅРѕР№ Р±Р°Р·РѕР№ РґР°РЅРЅС‹С…
             _options = new DbContextOptionsBuilder<GitStartContext>()
-                .UseSqlite($"Data Source={DatabaseFileName}")
+                .UseSqlite($"Data Source={databaseFileName}")
                 .Options;
 
-            // Создаем новую базу данных
+            // РЎРѕР·РґР°РµРј РЅРѕРІСѓСЋ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
             using (var context = new GitStartContext(_options))
             {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                context.Database.EnsureDeleted(); // РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ Р±Р°Р·Р° РґР°РЅРЅС‹С… СѓРґР°Р»РµРЅР°
+                context.Database.EnsureCreated(); // РЎРѕР·РґР°Р№С‚Рµ РЅРѕРІСѓСЋ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
             }
         }
 
         [Fact]
         public void TestDatabaseConnection()
         {
-            // Проверка успешного подключения к базе данных
+            // РџСЂРѕРІРµСЂРєР° СѓСЃРїРµС€РЅРѕРіРѕ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…
             using (var context = new GitStartContext(_options))
             {
-                Assert.True(context.Database.CanConnect(), "Не удалось подключиться к базе данных.");
+                Assert.True(context.Database.CanConnect(), "РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С….");
             }
         }
 
         [Fact]
         public void TestAddUser()
         {
-            // Тест добавления пользователя в базу данных
+            // РўРµСЃС‚ РґРѕР±Р°РІР»РµРЅРёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…
             using (var context = new GitStartContext(_options))
             {
                 var user = new User
@@ -69,7 +73,7 @@ namespace GitStart.Tests
         [Fact]
         public void TestUniqueEmailConstraint()
         {
-            // Тест уникальности email
+            // РўРµСЃС‚ СѓРЅРёРєР°Р»СЊРЅРѕСЃС‚Рё email
             using (var context = new GitStartContext(_options))
             {
                 var user1 = new User
@@ -82,7 +86,7 @@ namespace GitStart.Tests
                 var user2 = new User
                 {
                     Name = "User Two",
-                    Email = "duplicate@example.com", // Дублирующий email
+                    Email = "duplicate@example.com", // Р”СѓР±Р»РёСЂСѓСЋС‰РёР№ email
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -90,7 +94,7 @@ namespace GitStart.Tests
                 context.Users.Add(user1);
                 context.SaveChanges();
 
-                // Попытка добавить второго пользователя с тем же email должна вызвать исключение
+                // РџРѕРїС‹С‚РєР° РґРѕР±Р°РІРёС‚СЊ РІС‚РѕСЂРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚РµРј Р¶Рµ email РґРѕР»Р¶РЅР° РІС‹Р·РІР°С‚СЊ РёСЃРєР»СЋС‡РµРЅРёРµ
                 Assert.Throws<DbUpdateException>(() =>
                 {
                     context.Users.Add(user2);
@@ -102,7 +106,7 @@ namespace GitStart.Tests
         [Fact]
         public void TestRepositoryUserRelationship()
         {
-            // Проверка связи репозитория с пользователем
+            // РџСЂРѕРІРµСЂРєР° СЃРІСЏР·Рё СЂРµРїРѕР·РёС‚РѕСЂРёСЏ СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
             using (var context = new GitStartContext(_options))
             {
                 var user = new User
@@ -137,7 +141,7 @@ namespace GitStart.Tests
         [Fact]
         public void TestBranchRepositoryRelationship()
         {
-            // Проверка связи ветки с репозиторием
+            // РџСЂРѕРІРµСЂРєР° СЃРІСЏР·Рё РІРµС‚РєРё СЃ СЂРµРїРѕР·РёС‚РѕСЂРёРµРј
             using (var context = new GitStartContext(_options))
             {
                 var user = new User
@@ -182,7 +186,7 @@ namespace GitStart.Tests
         [Fact]
         public void TestCommitRepositoryRelationship()
         {
-            // Проверка связи коммита с репозиторием
+            // РџСЂРѕРІРµСЂРєР° СЃРІСЏР·Рё РєРѕРјРјРёС‚Р° СЃ СЂРµРїРѕР·РёС‚РѕСЂРёРµРј
             using (var context = new GitStartContext(_options))
             {
                 var user = new User
@@ -228,17 +232,15 @@ namespace GitStart.Tests
         [Fact]
         public void TestRemoteRepositoryAssociation()
         {
-            // Проверка связи удаленного репозитория с репозиторием
+            // РџСЂРѕРІРµСЂРєР° СЃРІСЏР·Рё СѓРґР°Р»РµРЅРЅРѕРіРѕ СЂРµРїРѕР·РёС‚РѕСЂРёСЏ СЃ СЂРµРїРѕР·РёС‚РѕСЂРёРµРј
             using (var context = new GitStartContext(_options))
             {
                 var user = new User
                 {
-
                     Name = "Test User Owner",
                     Email = "test_user_owner@example.com",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
-
                 };
                 context.Users.Add(user);
                 context.SaveChanges();

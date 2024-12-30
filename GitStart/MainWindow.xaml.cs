@@ -18,7 +18,15 @@ namespace GitStart
     {
         public MainWindow()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+                Services.LoggerService.LogInfo("Главное окно запущено");
+            }
+            catch (Exception ex)
+            {
+                Services.LoggerService.LogError(ex, "Произошла ошибка");
+            }
         }
     }
 }

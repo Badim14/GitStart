@@ -20,12 +20,15 @@ namespace GitStart.Database
             : base(options)
         {
         }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=GitStart.db");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite("Data Source=GitStart.db");
+            }
         }
-         
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Индексы для уникальных полей
