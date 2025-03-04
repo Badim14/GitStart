@@ -78,6 +78,7 @@
                     <ListBox.ItemContainerStyle>
                         <StaticResource ResourceKey="RepoListBoxItemStyle"/>
                     </ListBox.ItemContainerStyle>
+                    <ListBox.DisplayMemberPath>Name</ListBox.DisplayMemberPath>
                 </ListBox>
 
 
